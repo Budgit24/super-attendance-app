@@ -1,0 +1,73 @@
+SUPER INTERNATIONAL TRAVELS LIMITED
+HR & ATTENDANCE PORTAL — CHANGE SPECIFICATION
+Version: 0.3 prototype update
+Date: 12 November 2026
+
+PURPOSE
+Update the existing Super Travels Staff Portal with compulsory facial identity matching, GPS verification against administrator-approved offices, mandatory explanations for off-site attendance, and a company-wide attendance leaderboard visible to every employee.
+
+1. MANDATORY FACIAL REGISTRATION AND MATCHING
+- Every active employee must register their face in the application before attendance can be recorded.
+- Registration captures a face descriptor from the employee's camera image.
+- Every clock-in AND clock-out requires a fresh camera scan.
+- The fresh scan is compared with the descriptor registered for the selected employee.
+- A scan that does not match the enrolled face is rejected. No attendance record is created or completed.
+- A scan for one employee cannot be used for another employee.
+- The prototype uses face-api.js in the browser and stores the face descriptor in local browser storage. It demonstrates face matching only; it is not a production-grade biometric security service and does not provide reliable liveness or anti-spoofing protection.
+
+2. ADMIN-REGISTERED OFFICES AND GPS
+- HR/administrators can maintain the approved office list.
+- Each approved office must have an office name, full street address, latitude, longitude and permitted geofence radius.
+- GPS must be freshly captured for every clock-in and clock-out.
+- The application compares the captured coordinates with every configured office geofence and identifies a matching registered office.
+- An office without administrator-configured coordinates cannot be treated as GPS-verified.
+- Employees cannot override the GPS result by manually selecting an office.
+
+3. OUTSIDE-OFFICE EXPLANATION
+- If GPS does not place the employee inside an approved office geofence, the application marks the attempt as outside the registered offices.
+- The employee must enter a reason, such as client visit, airport duty, field assignment or approved remote work.
+- The reason, GPS coordinates, GPS accuracy, date/time and employee identity are stored with the attendance record for HR review.
+- The same rule applies to clock-in and clock-out.
+- Failure to obtain GPS must not be treated as a successful verified attendance event.
+
+4. COMPANY-WIDE ATTENDANCE LEADERBOARD
+- A Punctuality Leaderboard page is available to employees, HR and administrators.
+- All active employees appear in the full company-wide ranking, not only the top performers.
+- The view shows rank, employee, office, days recorded, chargeable late arrivals and punctuality score.
+- Best and lowest punctuality views are also available.
+- The prototype calculates punctuality from recorded attendance. Production scoring must account for approved leave, public holidays, authorised off-site duties, approved exceptions and the employee's actual scheduled working days so staff are not unfairly penalised.
+- Private penalty amounts are not displayed on the public leaderboard.
+
+5. ADMINISTRATION AND AUDIT
+- Administrators/HR maintain office addresses, coordinates and geofence radii.
+- Location exceptions and facial verification outcomes must be available to authorised HR/administrators for review.
+- Production audit records should include employee ID, event type, timestamp, face-match result, GPS coordinates, GPS accuracy, matched office or off-site reason, and any manual review outcome.
+
+6. PROTOTYPE STATUS AND PRODUCTION REQUIREMENTS
+The supplied HTML is a browser-based prototype. It stores staff, attendance and face descriptors in local browser storage on one device. Preview role selection is not live authentication, and data is not shared across staff devices. GPS geofencing is client-side and can be manipulated on compromised devices.
+
+Before real staff deployment, the company must implement:
+- Real employee authentication and role-based access control.
+- A shared server database with row-level access controls.
+- Server-side geofence validation using approved office coordinates.
+- A vetted biometric service or secure on-device biometric implementation, with encrypted biometric templates and server-side or trusted-device matching.
+- Liveness detection and anti-spoofing controls; a browser face descriptor alone is not sufficient proof of identity.
+- Secure biometric enrolment, consent/notice and a lawful processing basis, retention/deletion rules, restricted access, breach controls and an appropriate Data Protection Impact Assessment under applicable Nigerian data-protection requirements.
+- A documented manual review/fallback process for camera, accessibility, device or connectivity failures.
+- Server-side audit logging, backups, monitoring and independent security testing.
+- A server-side scheduled job for automatic checkout; browser timers are not reliable when the app is closed.
+
+ACCEPTANCE TESTS
+1. An employee without a registered face cannot clock in or clock out.
+2. A face scan matching the registered employee permits the face-verification step.
+3. A different person's face is rejected and no attendance event is accepted.
+4. A fresh GPS capture inside a configured office geofence identifies that office.
+5. A GPS capture outside every approved geofence requires a reason before attendance can be submitted.
+6. Manually selecting an office does not bypass GPS/geofence validation.
+7. Clock-out also requires a fresh matching face scan and fresh GPS capture.
+8. The full active-staff leaderboard is visible from the employee role as well as HR/admin roles.
+9. The public leaderboard does not expose individual penalty amounts.
+10. Unconfigured office coordinates cannot be treated as verified locations.
+
+IMPORTANT
+This delivery updates the prototype's workflow and demonstrates browser-based face descriptor matching. It does not mean the application is production-secure or that a real shared deployment has been connected. Do not enrol real employee biometric data in this prototype.
